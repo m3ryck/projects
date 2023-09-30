@@ -1,18 +1,21 @@
-import { Router } from "express";
+import { Router,Request,Response } from "express";
 import ConverterService from "../services/ConverterService";
 
 const converterRouter = Router()
 
 
-converterRouter.post('/', async (req,resp) =>{
-  
-  const {value} = req.body
+converterRouter.post('/', async (req:Request,resp:Response) =>{
 
+  const {value} = req.body
   const converter = new ConverterService();
 
-  const decValue = await converter.execute({value});
+  const response = await converter.execute({value});
 
-  return resp.json(decValue);
+  if(response){
+    return resp.json({value:response});
+  }else{
+    return resp.status(400).send({error:'Only binary values are allowed',code:'ERR-01'})
+  }
 })
 
 

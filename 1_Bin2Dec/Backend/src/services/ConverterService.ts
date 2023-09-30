@@ -9,24 +9,34 @@
 
 import ConverterRepository from "../repositories/ConverterRepository"
 
+
 interface ConverterServiceDTO{
   value: number
 }
 
 class ConverterService{
-  public async execute({value}:ConverterServiceDTO):Promise<number>{
+  public async execute({value}:ConverterServiceDTO):Promise<number|undefined>{
 
     // Verificar se o usuário digitou apenas 0/1 
     // fazer mais validações se necessário
+    var decValue
 
-    const converterRepository = new ConverterRepository();
+    try{
+      const regexValidate = /\D|[2-9]/;
 
+      if(String(value).match(regexValidate)){
+        throw new Error("Only binary values ​​are allowed")
+      }
 
-    const binValue = value
+      const converterRepository = new ConverterRepository();
 
-    const decValue = converterRepository.toConvert({value:binValue})
+      decValue = await converterRepository.toConvert({value:value})
+      
+    }catch(err){
+    }
 
     return decValue
+  
   }
 }
 
